@@ -7,15 +7,21 @@ locale-gen
 echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 echo archlinux >> /etc/hostname
 
-pacman --noconfirm --needed -S neovim base-devel git intel-ucode networkmanager
-systemctl enable NetworkManager
+pacman --noconfirm --needed -S neovim base-devel git intel-ucode
+systemctl enable systemd-networkd
 systemctl enable systemd-resolved
+
+echo "[Match]
+Name=enp2s0
+
+[Network]
+DHCP=yes" > /etc/systemd/network/20-wired.network
 
 bootctl install
 mkdir -p /boot/loader/entries /etc/pacman.d/hooks
 
 echo "default  arch.conf 
-timeout  10 
+timeout  4 
 console-mode max 
 editor  yes" > /boot/loader/loader.conf
  
@@ -65,6 +71,5 @@ sed -i "/^#Color/cColor" /etc/pacman.conf
 sed -i "/^#ParallelDownloads/cParallelDownloads = 5" /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 sudo pacman -Syu
-
-pacman --noconfirm --needed -S xorg xorg-xinit noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra pipewire lib32-pipewire wireplumber pipewire-alsa pipewire-pulse pipewire-jack pulsemixer lib32-libglvnd lib32-nvidia-utils lib32-vulkan-icd-loader libglvnd nvidia-dkms nvidia-settings vulkan-icd-loader ttf-jetbrains-mono-nerd flameshot xclip libxft rofi thunar gvfs htop mpv feh neofetch zip unzip clang
+pacman --noconfirm --needed -S xorg xorg-xinit noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra pipewire lib32-pipewire wireplumber pipewire-alsa pipewire-pulse pipewire-jack pulsemixer lib32-libglvnd lib32-nvidia-utils lib32-vulkan-icd-loader libglvnd nvidia-dkms nvidia-settings vulkan-icd-loader ttf-jetbrains-mono-nerd maim xclip libxft rofi thunar gvfs htop mpv feh neofetch zip unzip clang
 sudo mkinitcpio -P
